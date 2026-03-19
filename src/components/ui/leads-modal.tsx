@@ -69,9 +69,7 @@ function Transcript({ messages }: { messages: ConversationMessage[] }) {
                 return (
                     <div key={i} className={cn("flex gap-2", isUser ? "justify-end" : "justify-start")}>
                         {!isUser && (
-                            <div className="w-5 h-5 rounded-full bg-[#C8472A]/10 border border-[#C8472A]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <span className="text-[7px] font-bold text-[#C8472A]">M</span>
-                            </div>
+                            <img src="/assets/maven-avatar.png" alt="Maven" className="w-5 h-5 rounded-full object-cover flex-shrink-0 mt-0.5" />
                         )}
                         <div className={cn(
                             "max-w-[80%] px-3 py-2 rounded-xl text-xs leading-relaxed",

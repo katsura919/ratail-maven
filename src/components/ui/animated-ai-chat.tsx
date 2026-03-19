@@ -214,9 +214,7 @@ function MessageBubble({ role, content }: { role: string; content: string }) {
             transition={{ duration: 0.25 }}
         >
             {!isUser && (
-                <div className="w-7 h-7 rounded-full bg-[#C8472A]/10 border border-[#C8472A]/20 flex items-center justify-center flex-shrink-0 mr-2 mt-0.5">
-                    <span className="text-[9px] font-bold text-[#C8472A] tracking-tight">MVN</span>
-                </div>
+                <img src="/assets/maven-avatar.png" alt="Maven" className="w-7 h-7 rounded-full object-cover flex-shrink-0 mr-2 mt-0.5" />
             )}
             <div
                 className={cn(
@@ -313,9 +311,7 @@ function QualificationCard({ qualification, leadId }: QualificationCardProps) {
             {/* Header */}
             <div className="bg-gradient-to-r from-[#C8472A]/5 to-transparent px-5 pt-5 pb-4 border-b border-zinc-100">
                 <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#C8472A]/10 border border-[#C8472A]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[9px] font-bold text-[#C8472A] tracking-tight">MVN</span>
-                    </div>
+                    <img src="/assets/maven-avatar.png" alt="Maven" className="w-8 h-8 rounded-full object-cover flex-shrink-0 mt-0.5" />
                     <div className="space-y-1">
                         <p className="text-sm font-semibold text-zinc-900">
                             You&apos;re a great fit for {qualification.prog}
@@ -754,33 +750,23 @@ export function AnimatedAIChat() {
                     >
                         {/* Header */}
                         <motion.div
-                            className="text-center mb-8 space-y-2"
+                            className="text-center mb-8 space-y-4"
                             initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1, duration: 0.4 }}
                         >
-                            <h1 className="text-3xl font-medium tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-zinc-900 to-zinc-500">
-                                Find your path to $1M+
-                            </h1>
-                            <p className="text-sm text-zinc-500">
-                                Chat with Maven, our AI advisor — takes about 2 minutes
-                            </p>
+                            <img
+                                src="/assets/maven-avatar.png"
+                                alt="Maven"
+                                className="w-20 h-20 rounded-full object-cover mx-auto ring-4 ring-white shadow-lg"
+                            />
+                            <div className="space-y-2">
+                                <p className="text-base text-zinc-500">
+                                    Chat with Maven, our AI advisor.
+                                </p>
+                            </div>
                         </motion.div>
 
-                        {/* Static greeting bubble */}
-                        <motion.div
-                            className="w-full max-w-2xl mb-4 flex items-start gap-2"
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.14, duration: 0.4 }}
-                        >
-                            <div className="w-7 h-7 rounded-full bg-[#C8472A]/10 border border-[#C8472A]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <span className="text-[9px] font-bold text-[#C8472A] tracking-tight">MVN</span>
-                            </div>
-                            <div className="px-4 py-2.5 rounded-2xl rounded-bl-sm bg-white border border-zinc-200 text-zinc-800 text-sm leading-relaxed shadow-sm">
-                                Hi! I&apos;m Maven, your RETAILMavens AI advisor — here to help you find the best next step for your store. What&apos;s going on in your business right now?
-                            </div>
-                        </motion.div>
 
                         {/* Input card */}
                         <motion.div
@@ -835,9 +821,7 @@ export function AnimatedAIChat() {
                         <div className="flex-shrink-0 border-b border-zinc-200 bg-white/80 backdrop-blur-xl px-6 py-3">
                             <div className="max-w-2xl mx-auto flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded-full bg-[#C8472A]/10 border border-[#C8472A]/20 flex items-center justify-center">
-                                        <span className="text-[8px] font-bold text-[#C8472A] tracking-tight">MVN</span>
-                                    </div>
+                                    <img src="/assets/maven-avatar.png" alt="Maven" className="w-6 h-6 rounded-full object-cover" />
                                     <span className="text-sm font-medium text-zinc-800">Maven</span>
                                     <span className="text-xs text-zinc-400">· RETAILMavens Advisor</span>
                                 </div>
@@ -862,9 +846,7 @@ export function AnimatedAIChat() {
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                     >
-                                        <div className="w-7 h-7 rounded-full bg-[#C8472A]/10 border border-[#C8472A]/20 flex items-center justify-center flex-shrink-0 mr-2 mt-0.5">
-                                            <span className="text-[9px] font-bold text-[#C8472A] tracking-tight">MVN</span>
-                                        </div>
+                                        <img src="/assets/maven-avatar.png" alt="Maven" className="w-7 h-7 rounded-full object-cover flex-shrink-0 mr-2 mt-0.5" />
                                         <div className="bg-white border border-zinc-200 shadow-sm rounded-2xl rounded-bl-sm px-4 py-2.5 flex items-center">
                                             <TypingDots />
                                         </div>
