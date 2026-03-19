@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RETAILMavens — Chat with Maven</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f5f4f0;
+    --bg-tertiary: #efede8;
+    --text: #1a1a18;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #888780;
+    --border: rgba(0,0,0,0.12);
+    --border-md: rgba(0,0,0,0.22);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --brand: #C8472A;
+    --brand-light: #FAECE7;
+    --brand-dark: #712B13;
+    --good: #0F6E56;
+    --warn: #BA7517;
+    --bad: #C8472A;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-tertiary);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 640px;
+    background: var(--bg);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 0.5px solid var(--border);
+  }
+
+  .hdr {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .rm-logo {
+    background: var(--brand);
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    line-height: 1.4;
+    flex-shrink: 0;
+  }
+
+  .hdr-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .hdr-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .chat-area {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    margin-bottom: 12px;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 480px;
+    overflow-y: auto;
+  }
+
+  .bbl {
+    max-width: 82%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .bbl.bot {
+    align-self: flex-start;
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-bottom-left-radius: 4px;
+  }
+
+  .bbl.usr {
+    align-self: flex-end;
+    background: var(--brand);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .bot-nm {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--brand);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+  }
+
+  .tdots span {
+    display: inline-block;
+    width: 5px; height: 5px;
+    background: var(--text-tertiary);
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: td 1.2s infinite;
+  }
+  .tdots span:nth-child(2) { animation-delay: .2s; }
+  .tdots span:nth-child(3) { animation-delay: .4s; }
+  @keyframes td { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-4px)} }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .chip {
+    padding: 6px 13px;
+    border: 0.5px solid var(--border-md);
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    transition: all .15s;
+  }
+  .chip:hover { border-color: var(--brand); color: var(--brand); }
+
+  .inp-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .inp-row input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-md);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg);
+    transition: border-color .15s;
+  }
+  .inp-row input:focus { outline: none; border-color: var(--brand); }
+  .inp-row input:disabled { opacity: .5; }
+
+  .snd-btn {
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity .2s;
+    white-space: nowrap;
+  }
+  .snd-btn:hover { opacity: .88; }
+  .snd-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+  .rec-card {
+    background: var(--bg);
+    border: 1.5px solid var(--brand);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-top: 4px;
+  }
+
+  .rec-badge {
+    display: inline-block;
+    background: var(--brand-light);
+    color: var(--brand-dark);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-bottom: 8px;
+  }
+
+  .rec-prog {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .rec-why {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+  }
+
+  .scores {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .sc {
+    flex: 1;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    padding: 8px;
+    text-align: center;
+  }
+
+  .sc-lbl {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-bottom: 3px;
+  }
+
+  .sc-val { font-size: 14px; font-weight: 500; }
+
+  .cta-btn {
+    display: inline-block;
+    background: var(--brand);
+    color: #fff;
+    padding: 11px 24px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity .2s;
+  }
+  .cta-btn:hover { opacity: .88; }
+
+  .restart-btn {
+    display: inline-block;
+    margin-top: 10px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 0.5px solid var(--border-md);
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  @media (max-width: 480px) {
+    .app { padding: 1.25rem; }
+    .hdr-title { font-size: 17px; }
+    .scores { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="hdr">
+    <div class="rm-logo">RETAIL<br>Mavens</div>
+    <div>
+      <div class="hdr-title">Find your path to $1M+</div>
+      <div class="hdr-sub">Chat with our AI advisor — takes about 2 minutes</div>
+    </div>
+  </div>
+
+  <div class="chat-area" id="chat-area"></div>
+
+  <div class="chips" id="chips-row">
+    <span class="chip" onclick="qs(this.innerText)">I want to hit $1M</span>
+    <span class="chip" onclick="qs(this.innerText)">My store does under $200K</span>
+    <span class="chip" onclick="qs(this.innerText)">I'm ready to sell my store</span>
+    <span class="chip" onclick="qs(this.innerText)">I'm drowning in inventory</span>
+    <span class="chip" onclick="qs(this.innerText)">I work way too many hours</span>
+  </div>
+
+  <div class="inp-row">
+    <input type="text" id="inp" placeholder="Tell me about your store..." onkeydown="if(event.key==='Enter')send()" />
+    <button class="snd-btn" id="snd-btn" onclick="send()">Send</button>
+  </div>
+</div>
+
+<script>
+var SYS = "You are a warm advisor for RETAILMavens, a coaching company helping independent retailers scale to $1M+. Your persona is 'Maven' — direct, encouraging, no fluff.\n\nPrograms:\n- RETAILMavens Coaching: stores under $300K needing foundation systems\n- Profit Club: stores $300K–$1M ready to scale\n- Life After Retail: owners ready to transition or sell\n\nYour job: qualify in 3–5 exchanges then recommend.\nGather naturally: (1) approx revenue, (2) biggest pain, (3) main goal.\n\nRules:\n- Max 60 words per reply\n- Ask max 1 question\n- Be warm and specific\n- After 3–4 exchanges output your reply then on a NEW LINE output ONLY this JSON (no backticks, no explanation):\n{\"r\":true,\"prog\":\"PROGRAM_NAME\",\"why\":\"1-2 sentences tied to their situation\",\"fit\":\"High\",\"urgency\":\"Medium\",\"ready\":\"High\"}\n- Use exact program names\n- Only output JSON when ready to recommend";
+
+var hist = [];
+var done = false;
+
+function addBot(txt, isTyping) {
+  var a = document.getElementById('chat-area');
+  var d = document.createElement('div');
+  d.className = 'bbl bot';
+  if (isTyping) {
+    d.id = 'typing-bbl';
+    d.innerHTML = '<div class="bot-nm">Maven</div><div class="tdots"><span></span><span></span><span></span></div>';
+  } else {
+    d.innerHTML = '<div class="bot-nm">Maven</div><div>' + txt + '</div>';
+  }
+  a.appendChild(d);
+  a.scrollTop = a.scrollHeight;
+}
+
+function addUser(txt) {
+  var a = document.getElementById('chat-area');
+  var d = document.createElement('div');
+  d.className = 'bbl usr';
+  d.textContent = txt;
+  a.appendChild(d);
+  a.scrollTop = a.scrollHeight;
+}
+
+function removeTyping() {
+  var t = document.getElementById('typing-bbl');
+  if (t) t.remove();
+}
+
+function showRec(data) {
+  var a = document.getElementById('chat-area');
+  var colors = { High: '#0F6E56', Medium: '#BA7517', Low: '#C8472A' };
+  var c = document.createElement('div');
+  c.className = 'rec-card';
+  c.innerHTML =
+    '<div class="rec-badge">Your recommended program</div>' +
+    '<div class="rec-prog">' + data.prog + '</div>' +
+    '<div class="rec-why">' + data.why + '</div>' +
+    '<div class="scores">' +
+      '<div class="sc"><div class="sc-lbl">Fit</div><div class="sc-val" style="color:' + (colors[data.fit] || '#0F6E56') + '">' + data.fit + '</div></div>' +
+      '<div class="sc"><div class="sc-lbl">Urgency</div><div class="sc-val" style="color:' + (colors[data.urgency] || '#BA7517') + '">' + data.urgency + '</div></div>' +
+      '<div class="sc"><div class="sc-lbl">Readiness</div><div class="sc-val" style="color:' + (colors[data.ready] || '#0F6E56') + '">' + data.ready + '</div></div>' +
+    '</div>' +
+    '<a class="cta-btn" href="https://hwdry6dbhoy.typeform.com/to/pWOSISax" target="_blank">Book a free strategy call \u2192</a>' +
+    '<br><button class="restart-btn" onclick="location.reload()">Start over</button>';
+  a.appendChild(c);
+  a.scrollTop = a.scrollHeight;
+  document.getElementById('inp').disabled = true;
+  document.getElementById('snd-btn').disabled = true;
+  document.getElementById('chips-row').style.display = 'none';
+}
+
+async function send() {
+  if (done) return;
+  var inp = document.getElementById('inp');
+  var msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = '';
+  document.getElementById('snd-btn').disabled = true;
+  document.getElementById('chips-row').style.display = 'none';
+  addUser(msg);
+  hist.push({ role: 'user', content: msg });
+  addBot('', true);
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 600,
+        system: SYS,
+        messages: hist
+      })
+    });
+    var d = await res.json();
+    var raw = (d.content && d.content.find(function(b) { return b.type === 'text'; }) || {}).text || "Tell me more about your store!";
+    removeTyping();
+
+    var jm = raw.match(/\{[^{}]*"r"\s*:\s*true[^{}]*\}/);
+    if (jm) {
+      done = true;
+      var textPart = raw.replace(jm[0], '').trim();
+      if (textPart) addBot(textPart.replace(/\n/g, '<br>'));
+      hist.push({ role: 'assistant', content: raw });
+      try {
+        var rec = JSON.parse(jm[0]);
+        setTimeout(function() { showRec(rec); }, 500);
+      } catch(e) {
+        addBot(raw.replace(/\n/g, '<br>'));
+      }
+    } else {
+      addBot(raw.replace(/\n/g, '<br>'));
+      hist.push({ role: 'assistant', content: raw });
+      document.getElementById('snd-btn').disabled = false;
+      inp.focus();
+    }
+  } catch(e) {
+    removeTyping();
+    addBot("Something went wrong — please try again!");
+    document.getElementById('snd-btn').disabled = false;
+  }
+}
+
+function qs(txt) {
+  document.getElementById('inp').value = txt;
+  send();
+}
+
+addBot("Hi! I'm Maven, your RETAILMavens AI advisor — here to help you find the best next step for your store. What's going on in your business right now?");
+</script>
+
+</body>
+</html>
