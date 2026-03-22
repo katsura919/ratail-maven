@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import type { UIMessage } from "ai";
 import { cn } from "@/lib/utils";
@@ -238,9 +239,9 @@ interface QualificationCardProps {
 }
 
 function QualificationCard({ qualification, leadId }: QualificationCardProps) {
+    const router = useRouter();
     const [form, setForm] = React.useState({ name: "", email: "", phone: "" });
     const [submitting, setSubmitting] = React.useState(false);
-    const [submitted, setSubmitted] = React.useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -254,7 +255,15 @@ function QualificationCard({ qualification, leadId }: QualificationCardProps) {
                     body: JSON.stringify(form),
                 });
             }
-            setSubmitted(true);
+            // Store context for pre-call form
+            localStorage.setItem("rm_precall_pending", JSON.stringify({
+                leadId,
+                name: form.name,
+                email: form.email,
+                phone: form.phone,
+                program: qualification.prog,
+            }));
+            router.push("/pre-call");
         } finally {
             setSubmitting(false);
         }
@@ -278,25 +287,6 @@ function QualificationCard({ qualification, leadId }: QualificationCardProps) {
                 >
                     Explore free resources <ArrowRight className="w-3.5 h-3.5" />
                 </a>
-            </motion.div>
-        );
-    }
-
-    if (submitted) {
-        return (
-            <motion.div
-                className="w-full rounded-2xl border border-emerald-200 bg-emerald-50 p-5 space-y-2"
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-            >
-                <div className="flex items-center gap-2 text-emerald-700">
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span className="font-medium text-sm">You&apos;re all set!</span>
-                </div>
-                <p className="text-sm text-emerald-600 leading-relaxed">
-                    The RETAILMavens team will reach out within 24 hours to schedule your free strategy call.
-                </p>
             </motion.div>
         );
     }
@@ -389,7 +379,7 @@ function QualificationCard({ qualification, leadId }: QualificationCardProps) {
                     ) : (
                         <CalendarDays className="w-4 h-4" />
                     )}
-                    {submitting ? "Saving..." : "Book My Free Strategy Call"}
+                    {submitting ? "Saving..." : "Continue to Pre-Call Form →"}
                 </motion.button>
             </form>
         </motion.div>
